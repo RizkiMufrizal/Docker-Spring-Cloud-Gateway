@@ -1,0 +1,23 @@
+version: "3.1"
+
+services:
+  redis:
+    image: bitnami/redis:latest
+    restart: always
+    ports:
+      - 6379:6379
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+  mysql:
+    image: mariadb:latest
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MARIADB_ROOT_PASSWORD: password
+
+  adminer:
+    image: adminer:latest
+    restart: always
+    ports:
+      - 8080:8080
