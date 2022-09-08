@@ -8,16 +8,17 @@ services:
       - 6379:6379
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
-  mysql:
+  mariadb:
     image: mariadb:latest
     restart: always
     ports:
       - 3306:3306
     environment:
       MARIADB_ROOT_PASSWORD: password
+      MARIADB_DATABASE: gateway
 
   adminer:
     image: adminer:latest
     restart: always
     ports:
-      - 8080:8080
+      - 8081:8080
