@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>API Route</title>
+
+    <link rel="stylesheet" th:href="@{/css/all.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/sb-admin-2.min.css}" />
+</head>
+
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <div th:replace="navbarleft :: navbarleft"></div>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <div th:replace="navbartop :: navbartop"></div>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <h1 class="h3 mb-2 text-gray-800">API Route</h1>
+
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <form th:action="@{/administrator/apiroute/update/{id}(id=${id})}" th:object="${api_route}" method="post">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" class="form-control" placeholder="Enter Name" th:field="*{name}" />
+                            </div>
+                            <div class="form-group">
+                                <label>Version</label>
+                                <input type="text" class="form-control" placeholder="Enter Version" th:field="*{version}" />
+                            </div>
+                            <div class="form-group">
+                                <label>Path</label>
+                                <input type="text" class="form-control" placeholder="Enter Path" th:field="*{path}" />
+                            </div>
+                            <div class="form-group">
+                                <label>Rewrite FrontEnd</label>
+                                <input type="text" class="form-control" placeholder="Enter Rewrite Front End" th:field="*{rewriteFrontend}" />
+                            </div>
+                            <div class="form-group">
+                                <label>Rewrite Backend End</label>
+                                <input type="text" class="form-control" placeholder="Enter Rewrite Backend End" th:field="*{rewriteBackend}" />
+                            </div>
+                            <div class="form-group">
+                                <label>Method</label>
+                                <select th:field="*{method}" class="form-control">
+                                    <option th:value="'*'" th:text="'*'"></option>
+                                    <option th:value="'GET'" th:text="GET"></option>
+                                    <option th:value="'POST'" th:text="POST"></option>
+                                    <option th:value="'PUT'" th:text="PUT"></option>
+                                    <option th:value="'DELETE'" th:text="DELETE"></option>
+                                    <option th:value="'OPTIONS'" th:text="OPTIONS"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>URI</label>
+                                <input type="text" class="form-control" placeholder="Enter URI" th:field="*{uri}" />
+                            </div>
+                            <div class="form-group">
+                                <label>Authentication</label>
+                                <select th:field="*{authentication}" class="form-control">
+                                    <option th:value="'passthrough'" th:text="'Pass Through'"></option>
+                                    <option th:value="'x-api-key'" th:text="'API Key'"></option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<script th:src="@{/js/jquery.min.js}" type="application/javascript"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}" type="application/javascript"></script>
+<script th:src="@{/js/jquery.easing.min.js}" type="application/javascript"></script>
+<script th:src="@{/js/sb-admin-2.min.js}" type="application/javascript"></script>
+
+</body>
+
+</html>

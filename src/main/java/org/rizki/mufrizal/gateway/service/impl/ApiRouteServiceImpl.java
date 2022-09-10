@@ -1,5 +1,6 @@
 package org.rizki.mufrizal.gateway.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.rizki.mufrizal.gateway.domain.ApiRoute;
 import org.rizki.mufrizal.gateway.repository.ApiRouteRepository;
 import org.rizki.mufrizal.gateway.service.ApiRouteService;
@@ -9,7 +10,10 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @Service
+@Slf4j
 public class ApiRouteServiceImpl implements ApiRouteService {
 
     @Autowired
@@ -25,6 +29,8 @@ public class ApiRouteServiceImpl implements ApiRouteService {
 
     @Override
     public Mono<ApiRoute> createApiRoute(ApiRoute apiRoute) {
+        apiRoute.setId(UUID.randomUUID().toString());
+        apiRoute.setIsNewRecord(true);
         return apiRouteRepository.save(apiRoute).doOnSuccess(x -> gatewayRouteService.refreshRoutes());
     }
 
@@ -40,8 +46,12 @@ public class ApiRouteServiceImpl implements ApiRouteService {
     @Override
     public Mono<Void> deleteApiRoute(String id) {
         return apiRouteRepository.findById(id)
-                .flatMap(apiRoute -> apiRouteRepository.deleteById(apiRoute.getId()))
-                .switchIfEmpty(Mono.error(new RuntimeException(String.format("Api route with id %s not found", id))))
+                .flatMap(apiRoute -> {
+                    if (apiRoute.getId() != null) {
+                        return apiRouteRepository.deleteById(apiRoute.getId());
+                    }
+                    return Mono.empty();
+                })
                 .doOnSuccess(x -> gatewayRouteService.refreshRoutes());
     }
 
