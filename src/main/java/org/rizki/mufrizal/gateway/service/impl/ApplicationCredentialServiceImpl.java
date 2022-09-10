@@ -68,4 +68,9 @@ public class ApplicationCredentialServiceImpl implements ApplicationCredentialSe
     public Mono<Long> count() {
         return applicationCredentialRepository.count();
     }
+
+    @Override
+    public Flux<ApplicationCredential> findAllByApiRoute(String apiRoute) {
+        return applicationCredentialRepository.findAllByApiRoute(apiRoute);
+    }
 }

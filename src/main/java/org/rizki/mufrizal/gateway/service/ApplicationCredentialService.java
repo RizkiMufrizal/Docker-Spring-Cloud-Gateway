@@ -18,4 +18,6 @@ public interface ApplicationCredentialService {
     Mono<ApplicationCredential> findById(String id);
 
     Mono<Long> count();
+
+    Flux<ApplicationCredential> findAllByApiRoute(String apiRoute);
 }

@@ -67,4 +67,11 @@ public class ApiRouteController {
                 .thenReturn("redirect:/administrator/apiroute");
     }
 
+    @GetMapping(value = "/apiroute/applicationcredentials/{id}")
+    public Mono<Rendering> apirouteDetailApplicationCredentials(@PathVariable("id") String id) {
+        return Mono.just(Rendering.view("apirouteapplicationcredentials")
+                .modelAttribute("api_route", apiRouteService.findById(id))
+                .modelAttribute("application_credentials", applicationCredentialService.findAllByApiRoute(id)).build());
+    }
+
 }

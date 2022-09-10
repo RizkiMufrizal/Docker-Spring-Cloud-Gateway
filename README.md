@@ -20,9 +20,13 @@ This project was created to learn reactive programming, functional programming a
 - [x] Database Migration
 - [x] Docker Support
 - [x] View api route and applications credential
-- [ ] Create api route and applications credential
-- [ ] Update api route and applications credential
-- [ ] Delete api route and applications credential
+- [x] Create api route and applications credential
+- [x] Update api route and applications credential
+- [x] Delete api route and applications credential
+- [ ] Grant Access API
+- [ ] Revoke API
+- [x] View API By application credential
+- [ ] View application credentials By API
 - [ ] User Management
 - [ ] Cache To Redis
 - [ ] Send Log to ELK
