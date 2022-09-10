@@ -8,6 +8,8 @@ CREATE TABLE tb_application_credential
 CREATE TABLE tb_api_route
 (
     id               varchar(36) PRIMARY KEY,
+    name             varchar(255),
+    version          varchar(10),
     path             varchar(255),
     rewrite_frontend varchar(255),
     rewrite_backend  varchar(255),
@@ -25,15 +27,17 @@ CREATE TABLE tb_api_route_application_credential
     CONSTRAINT FK_Route FOREIGN KEY (api_route_id) REFERENCES tb_api_route (id)
 );
 
-INSERT INTO tb_api_route(id, path, rewrite_frontend, rewrite_backend, method, uri, authentication)
-values ('4c4239a3-9cca-441b-829a-178c2dda530a', '/v1/**', '/v1/(?<segment>.*)', '/${segment}', null,
-        'https://httpbin.org', null);
+INSERT INTO tb_api_route(id, name, version, path, rewrite_frontend, rewrite_backend, method, uri, authentication)
+values ('4c4239a3-9cca-441b-829a-178c2dda530a', 'http bin', '1.0.0', '/v1/**', '/v1/(?<segment>.*)', '/${segment}',
+        'GET',
+        'https://httpbin.org', 'passthrough');
 
 INSERT INTO tb_application_credential(id, application_name, api_key)
 values ('e4251daf-8d83-444b-b661-47a3b090a0a1', 'Sample Application', '2966e3c7-e670-4535-b56b-6619b101598a');
 
-INSERT INTO tb_api_route(id, path, rewrite_frontend, rewrite_backend, method, uri, authentication)
-values ('aca137ed-baa7-49a1-a465-0719a5d684ae', '/v2/**', '/v2/(?<segment>.*)', '/${segment}', null,
+INSERT INTO tb_api_route(id, name, version, path, rewrite_frontend, rewrite_backend, method, uri, authentication)
+values ('aca137ed-baa7-49a1-a465-0719a5d684ae', 'http bin', '1.0.0', '/v2/**', '/v2/(?<segment>.*)', '/${segment}',
+        'POST',
         'https://httpbin.org', 'x-api-key');
 
 insert into tb_api_route_application_credential(id, application_credential_id, api_route_id)

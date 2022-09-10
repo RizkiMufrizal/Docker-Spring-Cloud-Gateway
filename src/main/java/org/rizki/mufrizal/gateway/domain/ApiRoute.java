@@ -23,6 +23,12 @@ public class ApiRoute implements Serializable {
     @Column("id")
     private String id;
 
+    @Column("name")
+    private String name;
+
+    @Column("version")
+    private String version;
+
     @Column("path")
     private String path;
 

@@ -6,6 +6,13 @@ spring:
   redis:
     host: localhost
     port: 6379
+  thymeleaf:
+    cache: false
+    check-template-location: false
+    prefix: file:./src/main/resources/templates/
+  web:
+    resources.cache.period: 0
+    resources.static-locations: file:./src/main/resources/static/
 logging:
   level:
     org.springframework:

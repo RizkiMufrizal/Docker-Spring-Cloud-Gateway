@@ -7,6 +7,14 @@ import reactor.core.publisher.Mono;
 public interface ApiRouteService {
     Flux<ApiRoute> findApiRoutes();
 
+    Mono<ApiRoute> createApiRoute(ApiRoute apiRoute);
+
+    Mono<ApiRoute> updateApiRoute(String id, ApiRoute apiRoute);
+
+    Mono<Void> deleteApiRoute(String id);
+
+    Mono<Long> count();
+
     Mono<ApiRoute> findById(String id);
 
     Mono<ApiRoute> findByApiRouteAndApiKey(String apiRoute, String apiKey);
