@@ -31,7 +31,8 @@ public class ApiRouteServiceImpl implements ApiRouteService {
     public Mono<ApiRoute> createApiRoute(ApiRoute apiRoute) {
         apiRoute.setId(UUID.randomUUID().toString());
         apiRoute.setIsNewRecord(true);
-        return apiRouteRepository.save(apiRoute).doOnSuccess(x -> gatewayRouteService.refreshRoutes());
+        return apiRouteRepository.save(apiRoute)
+                .doOnSuccess(x -> gatewayRouteService.refreshRoutes());
     }
 
     @Override

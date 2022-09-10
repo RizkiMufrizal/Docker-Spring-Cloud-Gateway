@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @Service
 public class ApplicationCredentialServiceImpl implements ApplicationCredentialService {
 
@@ -21,6 +23,9 @@ public class ApplicationCredentialServiceImpl implements ApplicationCredentialSe
 
     @Override
     public Mono<ApplicationCredential> createApplicationCredential(ApplicationCredential applicationCredential) {
+        applicationCredential.setId(UUID.randomUUID().toString());
+        applicationCredential.setApiKey(UUID.randomUUID().toString());
+        applicationCredential.setIsNewRecord(true);
         return applicationCredentialRepository.save(applicationCredential);
     }
 
@@ -33,10 +38,30 @@ public class ApplicationCredentialServiceImpl implements ApplicationCredentialSe
     }
 
     @Override
+    public Mono<ApplicationCredential> regerateApiKey(String id) {
+        return applicationCredentialRepository.findById(id)
+                .map(applicationCredential -> {
+                    applicationCredential.setApiKey(UUID.randomUUID().toString());
+                    return applicationCredential;
+                })
+                .flatMap(applicationCredentialRepository::save)
+                .switchIfEmpty(Mono.error(new RuntimeException(String.format("application credential with id %s not found", id))));
+    }
+
+    @Override
     public Mono<Void> deleteApplicationCredential(String id) {
         return applicationCredentialRepository.findById(id)
-                .flatMap(applicationCredential -> applicationCredentialRepository.deleteById(applicationCredential.getId()))
-                .switchIfEmpty(Mono.error(new RuntimeException(String.format("application credential with id %s not found", id))));
+                .flatMap(applicationCredential -> {
+                    if (applicationCredential.getId() != null) {
+                        return applicationCredentialRepository.deleteById(applicationCredential.getId());
+                    }
+                    return Mono.empty();
+                });
+    }
+
+    @Override
+    public Mono<ApplicationCredential> findById(String id) {
+        return applicationCredentialRepository.findById(id);
     }
 
     @Override

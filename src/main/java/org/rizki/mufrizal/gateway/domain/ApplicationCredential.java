@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -17,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("tb_application_credential")
-public class ApplicationCredential implements Serializable {
+public class ApplicationCredential implements Serializable, Persistable {
     @Id
     @Column("id")
     private String id;
@@ -30,4 +31,13 @@ public class ApplicationCredential implements Serializable {
 
     @Transient
     private List<ApiRouteApplicationCredential> apiRouteApplicationCredentials;
+
+    @Transient
+    private Boolean isNewRecord = false;
+
+    @Transient
+    @Override
+    public boolean isNew() {
+        return this.getIsNewRecord();
+    }
 }
