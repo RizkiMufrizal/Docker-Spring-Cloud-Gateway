@@ -1,6 +1,9 @@
 package org.rizki.mufrizal.gateway.filters;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.rizki.mufrizal.gateway.constant.GatewayConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -22,8 +25,6 @@ public class PreGlobalFilter implements GlobalFilter, Ordered {
     @Autowired
     private ModifyRequestBodyGatewayFilterFactory filterFactory;
 
-    public static final String ORIGINAL_REQUEST_BODY = "originalRequestBody";
-
     @Override
     public int getOrder() {
         return NettyWriteResponseFilter.WRITE_RESPONSE_FILTER_ORDER;
@@ -35,7 +36,7 @@ public class PreGlobalFilter implements GlobalFilter, Ordered {
                 .apply(new ModifyRequestBodyGatewayFilterFactory.Config()
                         .setRewriteFunction(String.class, String.class, (newExchange, body) -> {
                             if (body != null) {
-                                exchange.getAttributes().put(ORIGINAL_REQUEST_BODY, body);
+                                exchange.getAttributes().put(GatewayConstant.ORIGINAL_REQUEST_BODY, body);
                                 return Mono.just(body);
                             }
                             return Mono.empty();
@@ -46,21 +47,18 @@ public class PreGlobalFilter implements GlobalFilter, Ordered {
 
     private void writeLog(ServerWebExchange exchange) {
         ServerHttpRequest request = exchange.getRequest();
-        String requestBody = exchange.getAttribute(PreGlobalFilter.ORIGINAL_REQUEST_BODY);
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n");
-
+        String requestBody = exchange.getAttribute(GatewayConstant.ORIGINAL_REQUEST_BODY);
         URI uri = exchange.getAttribute(ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR);
-        sb.append("URI: ").append(uri).append("\n");
-        sb.append("Method: ").append(request.getMethod()).append("\n");
-        sb.append("Request Headers: ");
 
-        request.getHeaders().forEach((key, value) -> sb.append(key).append("=").append(value).append(", "));
-        sb.append("\n");
-        sb.append("Request Body: ").append(requestBody).append("\n");
-
-        log.info(sb.toString());
-        exchange.getAttributes().remove(PreGlobalFilter.ORIGINAL_REQUEST_BODY);
+        log.info("Request URI: {}", uri);
+        log.info("Request Method: {}", request.getMethod());
+        log.info("Request Body: {}", requestBody);
+        try {
+            log.info("Request Headers: {}", new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(request.getHeaders()));
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
 }

@@ -8,5 +8,7 @@ spring:
     port: 6379
 logging:
   level:
-    org.springframework.cloud.gateway: DEBUG
+    org.springframework:
+      r2dbc: DEBUG
+      cloud.gateway: DEBUG
     reactor.netty.http.client: DEBUG
