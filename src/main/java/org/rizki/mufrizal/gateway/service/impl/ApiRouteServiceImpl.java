@@ -70,4 +70,9 @@ public class ApiRouteServiceImpl implements ApiRouteService {
     public Mono<ApiRoute> findByApiRouteAndApiKey(String apiRoute, String apiKey) {
         return apiRouteRepository.findByApiRouteAndApiKey(apiRoute, apiKey);
     }
+
+    @Override
+    public Flux<ApiRoute> findByApplicationCredential(String id) {
+        return apiRouteRepository.findByApplicationCredential(id);
+    }
 }

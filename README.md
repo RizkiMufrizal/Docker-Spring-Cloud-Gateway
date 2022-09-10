@@ -26,7 +26,7 @@ This project was created to learn reactive programming, functional programming a
 - [ ] Grant Access API
 - [ ] Revoke API
 - [x] View API By application credential
-- [ ] View application credentials By API
+- [x] View application credentials By API
 - [ ] User Management
 - [ ] Cache To Redis
 - [ ] Send Log to ELK

@@ -1,6 +1,7 @@
 package org.rizki.mufrizal.gateway.controller;
 
 import org.rizki.mufrizal.gateway.domain.ApplicationCredential;
+import org.rizki.mufrizal.gateway.service.ApiRouteService;
 import org.rizki.mufrizal.gateway.service.ApplicationCredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,9 @@ public class ApplicationCredentialController {
 
     @Autowired
     private ApplicationCredentialService applicationCredentialService;
+
+    @Autowired
+    private ApiRouteService apiRouteService;
 
     @GetMapping(value = "/applicationcredential")
     public Mono<Rendering> applicationcredential() {
@@ -60,5 +64,12 @@ public class ApplicationCredentialController {
     public Mono<String> regerateApiKey(@PathVariable("id") String id) {
         return applicationCredentialService.regerateApiKey(id)
                 .thenReturn("redirect:/administrator/applicationcredential");
+    }
+
+    @GetMapping(value = "/applicationcredential/apiroute/{id}")
+    public Mono<Rendering> applicationCredentialDetailApiroutes(@PathVariable("id") String id) {
+        return Mono.just(Rendering.view("applicationcredentialapiroutes")
+                .modelAttribute("application_credential", applicationCredentialService.findById(id))
+                .modelAttribute("api_routes", apiRouteService.findByApplicationCredential(id)).build());
     }
 }
