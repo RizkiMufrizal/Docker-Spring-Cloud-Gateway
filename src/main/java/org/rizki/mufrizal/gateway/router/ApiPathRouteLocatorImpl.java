@@ -30,7 +30,7 @@ public class ApiPathRouteLocatorImpl implements RouteLocator {
 
     private Buildable<Route> setPredicateSpec(ApiRoute apiRoute, PredicateSpec predicateSpec) {
         BooleanSpec booleanSpec = predicateSpec.path(apiRoute.getPath());
-        if (apiRoute.getMethod() != null && !apiRoute.getMethod().isEmpty()) {
+        if (apiRoute.getMethod() != null && !apiRoute.getMethod().isEmpty() && !apiRoute.getMethod().equals("*")) {
             booleanSpec.and().method(apiRoute.getMethod());
         }
         booleanSpec.filters(f -> f.rewritePath(apiRoute.getRewriteFrontend(), apiRoute.getRewriteBackend()));
