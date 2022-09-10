@@ -9,12 +9,15 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.io.Serializable;
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("tb_api_route")
-public class ApiRoute {
+public class ApiRoute implements Serializable {
 
     @Id
     @Column("id")
@@ -39,5 +42,5 @@ public class ApiRoute {
     private String authentication;
 
     @Transient
-    private ApplicationCredential applicationCredential;
+    private List<ApiRouteApplicationCredential> apiRouteApplicationCredentials;
 }

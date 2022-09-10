@@ -4,12 +4,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.rizki.mufrizal.gateway.constant.AuthenticationSchema;
+import org.rizki.mufrizal.gateway.domain.ApiRoute;
 import org.rizki.mufrizal.gateway.mapper.response.GeneralResponse;
-import org.rizki.mufrizal.gateway.service.ApplicationCredentialService;
+import org.rizki.mufrizal.gateway.service.ApiRouteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.filter.NettyWriteResponseFilter;
+import org.springframework.cloud.gateway.route.Route;
+import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -26,7 +29,7 @@ import java.nio.charset.Charset;
 public class AuthenticationApiKeyPreFilter implements GlobalFilter, Ordered {
 
     @Autowired
-    private ApplicationCredentialService applicationCredentialService;
+    private ApiRouteService apiRouteService;
 
     @Override
     public int getOrder() {
@@ -35,21 +38,39 @@ public class AuthenticationApiKeyPreFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        ServerHttpRequest serverHttpRequest = exchange.getRequest();
-        if (!serverHttpRequest.getHeaders().containsKey(AuthenticationSchema.APIKEY)) {
-            log.error("header x-api-key not found");
-            return this.onError(exchange, "403", "header x-api-key not found");
+        Route route = exchange.getAttribute(ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR);
+        if (route != null && route.getId() != null) {
+            log.info("route id : {}", route.getId());
+            return apiRouteService.findById(route.getId())
+                    .map(apiRoute -> this.proceedValidateApiKey(exchange, chain, apiRoute))
+                    .flatMap(x -> x);
+        } else {
+            return this.onError(exchange, "403", "Route Not Found");
         }
-        String apiKey = serverHttpRequest.getHeaders().getFirst(AuthenticationSchema.APIKEY);
-        if (apiKey != null && apiKey.isEmpty()) {
-            log.error("header x-api-key empty");
-            return this.onError(exchange, "401", "header x-api-key empty");
+    }
+
+    private Mono<Void> proceedValidateApiKey(ServerWebExchange exchange, GatewayFilterChain chain, ApiRoute apiRoute) {
+        if (apiRoute.getAuthentication() != null && apiRoute.getAuthentication().equals(AuthenticationSchema.APIKEY)) {
+            ServerHttpRequest serverHttpRequest = exchange.getRequest();
+            if (!serverHttpRequest.getHeaders().containsKey(AuthenticationSchema.APIKEY)) {
+                log.error("header x-api-key not found");
+                return this.onError(exchange, "403", "header x-api-key not found");
+            }
+            String apiKey = serverHttpRequest.getHeaders().getFirst(AuthenticationSchema.APIKEY);
+            if (apiKey != null && apiKey.isEmpty()) {
+                log.error("header x-api-key empty");
+                return this.onError(exchange, "401", "header x-api-key empty");
+            }
+            log.info("x-api-key {}", apiKey);
+            return apiRouteService.findByApiRouteAndApiKey(apiRoute.getId(), apiKey)
+                    .map(x -> {
+                        log.info("api route {}", x);
+                        return chain.filter(exchange);
+                    })
+                    .defaultIfEmpty(this.onError(exchange, "401", "Invalid x-api-key"))
+                    .flatMap(x -> x);
         }
-        log.info("x-api-key {}", apiKey);
-        return applicationCredentialService.findOne(apiKey)
-                .map(x -> chain.filter(exchange))
-                .defaultIfEmpty(this.onError(exchange, "401", "Invalid x-api-key"))
-                .flatMap(x -> x);
+        return chain.filter(exchange);
     }
 
     private Mono<Void> onError(ServerWebExchange serverWebExchange, String code, String message) {

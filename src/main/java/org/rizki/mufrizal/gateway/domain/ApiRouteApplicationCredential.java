@@ -10,24 +10,27 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("tb_application_credential")
-public class ApplicationCredential implements Serializable {
+@Table("tb_api_route_application_credential")
+public class ApiRouteApplicationCredential implements Serializable {
+
     @Id
     @Column("id")
     private String id;
 
-    @Column("application_name")
-    private String applicationName;
+    @Column("application_credential_id")
+    private String applicationCredentialId;
 
-    @Column("api_key")
-    private String apiKey;
+    @Column("api_route_id")
+    private String apiRoutId;
 
     @Transient
-    private List<ApiRouteApplicationCredential> apiRouteApplicationCredentials;
+    private ApiRoute apiRoute;
+
+    @Transient
+    private ApplicationCredential applicationCredential;
 }

@@ -20,11 +20,9 @@ public class ApiPathRouteLocatorImpl implements RouteLocator {
     public Flux<Route> getRoutes() {
         RouteLocatorBuilder.Builder routesBuilder = routeLocatorBuilder.routes();
         return apiRouteService.findApiRoutes()
-                .map(
-                        apiRoute -> routesBuilder.route(String.valueOf(apiRoute.getId()),
-                                    predicateSpec -> setPredicateSpec(apiRoute, predicateSpec)
-                        )
-                )
+                .map(apiRoute ->
+                        routesBuilder.route(String.valueOf(apiRoute.getId()), predicateSpec ->
+                                setPredicateSpec(apiRoute, predicateSpec)))
                 .collectList()
                 .flatMapMany(builders -> routesBuilder.build()
                         .getRoutes());
