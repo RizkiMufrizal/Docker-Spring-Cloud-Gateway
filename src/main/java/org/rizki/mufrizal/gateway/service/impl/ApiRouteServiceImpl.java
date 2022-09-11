@@ -2,6 +2,8 @@ package org.rizki.mufrizal.gateway.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.rizki.mufrizal.gateway.domain.ApiRoute;
+import org.rizki.mufrizal.gateway.redisreactive.annotation.RedisReactiveCacheEvictAll;
+import org.rizki.mufrizal.gateway.redisreactive.annotation.RedisReactiveCacheGet;
 import org.rizki.mufrizal.gateway.repository.ApiRouteRepository;
 import org.rizki.mufrizal.gateway.service.ApiRouteService;
 import org.rizki.mufrizal.gateway.service.GatewayRouteService;
@@ -35,6 +37,7 @@ public class ApiRouteServiceImpl implements ApiRouteService {
                 .doOnSuccess(x -> gatewayRouteService.refreshRoutes());
     }
 
+    @RedisReactiveCacheEvictAll
     @Override
     public Mono<ApiRoute> updateApiRoute(String id, ApiRoute apiRoute) {
         return apiRouteRepository.findById(id)
@@ -44,6 +47,7 @@ public class ApiRouteServiceImpl implements ApiRouteService {
                 .doOnSuccess(x -> gatewayRouteService.refreshRoutes());
     }
 
+    @RedisReactiveCacheEvictAll
     @Override
     public Mono<Void> deleteApiRoute(String id) {
         return apiRouteRepository.findById(id)
@@ -61,11 +65,13 @@ public class ApiRouteServiceImpl implements ApiRouteService {
         return apiRouteRepository.count();
     }
 
+    @RedisReactiveCacheGet(key = "#id")
     @Override
     public Mono<ApiRoute> findById(String id) {
         return apiRouteRepository.findById(id);
     }
 
+    @RedisReactiveCacheGet(key = "#apiRoute.concat(#apiKey)")
     @Override
     public Mono<ApiRoute> findByApiRouteAndApiKey(String apiRoute, String apiKey) {
         return apiRouteRepository.findByApiRouteAndApiKey(apiRoute, apiKey);

@@ -1,5 +1,6 @@
 package org.rizki.mufrizal.gateway.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,9 +33,11 @@ public class ApplicationCredential implements Serializable, Persistable {
     @Transient
     private List<ApiRouteApplicationCredential> apiRouteApplicationCredentials;
 
+    @JsonIgnore
     @Transient
     private Boolean isNewRecord = false;
 
+    @JsonIgnore
     @Transient
     @Override
     public boolean isNew() {

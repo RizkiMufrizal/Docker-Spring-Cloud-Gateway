@@ -1,6 +1,7 @@
 package org.rizki.mufrizal.gateway.service.impl;
 
 import org.rizki.mufrizal.gateway.domain.ApplicationCredential;
+import org.rizki.mufrizal.gateway.redisreactive.annotation.RedisReactiveCacheEvictAll;
 import org.rizki.mufrizal.gateway.repository.ApplicationCredentialRepository;
 import org.rizki.mufrizal.gateway.service.ApplicationCredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class ApplicationCredentialServiceImpl implements ApplicationCredentialSe
         return applicationCredentialRepository.save(applicationCredential);
     }
 
+    @RedisReactiveCacheEvictAll
     @Override
     public Mono<ApplicationCredential> updateApplicationCredential(String id, ApplicationCredential applicationCredential) {
         return applicationCredentialRepository.findById(id)
@@ -37,6 +39,7 @@ public class ApplicationCredentialServiceImpl implements ApplicationCredentialSe
                 .switchIfEmpty(Mono.error(new RuntimeException(String.format("application credential with id %s not found", id))));
     }
 
+    @RedisReactiveCacheEvictAll
     @Override
     public Mono<ApplicationCredential> regerateApiKey(String id) {
         return applicationCredentialRepository.findById(id)
@@ -48,6 +51,7 @@ public class ApplicationCredentialServiceImpl implements ApplicationCredentialSe
                 .switchIfEmpty(Mono.error(new RuntimeException(String.format("application credential with id %s not found", id))));
     }
 
+    @RedisReactiveCacheEvictAll
     @Override
     public Mono<Void> deleteApplicationCredential(String id) {
         return applicationCredentialRepository.findById(id)
