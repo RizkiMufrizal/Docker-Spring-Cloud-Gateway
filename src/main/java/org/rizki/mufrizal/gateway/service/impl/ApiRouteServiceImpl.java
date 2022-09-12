@@ -29,6 +29,7 @@ public class ApiRouteServiceImpl implements ApiRouteService {
         return apiRouteRepository.findAll();
     }
 
+    @RedisReactiveCacheEvictAll
     @Override
     public Mono<ApiRoute> createApiRoute(ApiRoute apiRoute) {
         apiRoute.setId(UUID.randomUUID().toString());
@@ -80,5 +81,10 @@ public class ApiRouteServiceImpl implements ApiRouteService {
     @Override
     public Flux<ApiRoute> findByApplicationCredential(String id) {
         return apiRouteRepository.findByApplicationCredential(id);
+    }
+
+    @Override
+    public Flux<ApiRoute> findByNotApplicationCredential(String id) {
+        return apiRouteRepository.findByNotApplicationCredential(id);
     }
 }

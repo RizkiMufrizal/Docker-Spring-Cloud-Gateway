@@ -1,6 +1,7 @@
 package org.rizki.mufrizal.gateway.controller;
 
 import org.rizki.mufrizal.gateway.domain.ApplicationCredential;
+import org.rizki.mufrizal.gateway.service.ApiRouteApplicationCredentialService;
 import org.rizki.mufrizal.gateway.service.ApiRouteService;
 import org.rizki.mufrizal.gateway.service.ApplicationCredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class ApplicationCredentialController {
 
     @Autowired
     private ApiRouteService apiRouteService;
+
+    @Autowired
+    private ApiRouteApplicationCredentialService apiRouteApplicationCredentialService;
 
     @GetMapping(value = "/applicationcredential")
     public Mono<Rendering> applicationcredential() {
@@ -69,7 +73,21 @@ public class ApplicationCredentialController {
     @GetMapping(value = "/applicationcredential/apiroute/{id}")
     public Mono<Rendering> applicationCredentialDetailApiroutes(@PathVariable("id") String id) {
         return Mono.just(Rendering.view("applicationcredentialapiroutes")
+                .modelAttribute("id", id)
                 .modelAttribute("application_credential", applicationCredentialService.findById(id))
+                .modelAttribute("not_api_routes", apiRouteService.findByNotApplicationCredential(id))
                 .modelAttribute("api_routes", apiRouteService.findByApplicationCredential(id)).build());
+    }
+
+    @GetMapping(value = "/applicationcredential/grantaccess/{routeId}/{applicationId}")
+    public Mono<String> grantAccess(@PathVariable("routeId") String routeId, @PathVariable("applicationId") String applicationId) {
+        return apiRouteApplicationCredentialService.grantAccess(routeId, applicationId)
+                .thenReturn("redirect:/administrator/applicationcredential/apiroute/" + applicationId);
+    }
+
+    @GetMapping(value = "/applicationcredential/revokeaccess/{routeId}/{applicationId}")
+    public Mono<String> revokeAccess(@PathVariable("routeId") String routeId, @PathVariable("applicationId") String applicationId) {
+        return apiRouteApplicationCredentialService.revokeAccess(routeId, applicationId)
+                .thenReturn("redirect:/administrator/applicationcredential/apiroute/" + applicationId);
     }
 }

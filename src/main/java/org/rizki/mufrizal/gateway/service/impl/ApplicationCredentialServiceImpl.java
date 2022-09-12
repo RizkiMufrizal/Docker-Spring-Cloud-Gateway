@@ -22,6 +22,7 @@ public class ApplicationCredentialServiceImpl implements ApplicationCredentialSe
         return applicationCredentialRepository.findAll();
     }
 
+    @RedisReactiveCacheEvictAll
     @Override
     public Mono<ApplicationCredential> createApplicationCredential(ApplicationCredential applicationCredential) {
         applicationCredential.setId(UUID.randomUUID().toString());

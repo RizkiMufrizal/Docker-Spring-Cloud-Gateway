@@ -20,4 +20,6 @@ public interface ApiRouteService {
     Mono<ApiRoute> findByApiRouteAndApiKey(String apiRoute, String apiKey);
 
     Flux<ApiRoute> findByApplicationCredential(String id);
+
+    Flux<ApiRoute> findByNotApplicationCredential(String id);
 }

@@ -23,8 +23,8 @@ This project was created to learn reactive programming, functional programming a
 - [x] Create api route and applications credential
 - [x] Update api route and applications credential
 - [x] Delete api route and applications credential
-- [ ] Grant Access API
-- [ ] Revoke API
+- [x] Grant Access API
+- [x] Revoke API
 - [x] View API By application credential
 - [x] View application credentials By API
 - [ ] User Management
