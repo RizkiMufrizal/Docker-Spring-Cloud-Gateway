@@ -84,6 +84,14 @@
                                     <option th:value="'x-api-key'" th:text="'API Key'"></option>
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label>Response Timeout</label>
+                                <input type="text" class="form-control" placeholder="Enter Response Timeout" th:field="*{responseTimeout}" />
+                            </div>
+                            <div class="form-group">
+                                <label>Connect Timeout</label>
+                                <input type="text" class="form-control" placeholder="Enter Connect Timeout" th:field="*{connectTimeout}" />
+                            </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
                     </div>

@@ -9,6 +9,7 @@ import org.springframework.cloud.gateway.route.builder.BooleanSpec;
 import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
+import org.springframework.cloud.gateway.support.RouteMetadataUtils;
 import reactor.core.publisher.Flux;
 
 @AllArgsConstructor
@@ -34,6 +35,8 @@ public class ApiPathRouteLocatorImpl implements RouteLocator {
             booleanSpec.and().method(apiRoute.getMethod());
         }
         booleanSpec.filters(f -> f.rewritePath(apiRoute.getRewriteFrontend(), apiRoute.getRewriteBackend()));
+        booleanSpec.metadata(RouteMetadataUtils.RESPONSE_TIMEOUT_ATTR, apiRoute.getResponseTimeout());
+        booleanSpec.metadata(RouteMetadataUtils.CONNECT_TIMEOUT_ATTR, apiRoute.getConnectTimeout());
         return booleanSpec.uri(apiRoute.getUri());
     }
 }

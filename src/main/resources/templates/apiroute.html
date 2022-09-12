@@ -58,6 +58,8 @@
                                     <th>Method</th>
                                     <th>URI Backend</th>
                                     <th>Authentication</th>
+                                    <th>Response Timeout</th>
+                                    <th>Connect Timeout</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -78,6 +80,8 @@
                                         <td th:text="${api_route.method}"></td>
                                         <td th:text="${api_route.uri}"></td>
                                         <td th:text="${api_route.authentication}"></td>
+                                        <td th:text="${api_route.responseTimeout}"></td>
+                                        <td th:text="${api_route.connectTimeout}"></td>
                                     </tr>
                                 </tbody>
                             </table>
