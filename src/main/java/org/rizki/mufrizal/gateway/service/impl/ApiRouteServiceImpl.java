@@ -29,11 +29,17 @@ public class ApiRouteServiceImpl implements ApiRouteService {
         return apiRouteRepository.findAll();
     }
 
+    @Override
+    public Flux<ApiRoute> findAllByEnableIsTrue() {
+        return apiRouteRepository.findAllByEnableIsTrue();
+    }
+
     @RedisReactiveCacheEvictAll
     @Override
     public Mono<ApiRoute> createApiRoute(ApiRoute apiRoute) {
         apiRoute.setId(UUID.randomUUID().toString());
         apiRoute.setIsNewRecord(true);
+        apiRoute.setEnable(true);
         return apiRouteRepository.save(apiRoute)
                 .doOnSuccess(x -> gatewayRouteService.refreshRoutes());
     }
@@ -66,10 +72,20 @@ public class ApiRouteServiceImpl implements ApiRouteService {
         return apiRouteRepository.count();
     }
 
-    @RedisReactiveCacheGet(key = "#id")
+    @Override
+    public Mono<Long> countAllByEnableIsTrue() {
+        return apiRouteRepository.countAllByEnableIsTrue();
+    }
+
     @Override
     public Mono<ApiRoute> findById(String id) {
         return apiRouteRepository.findById(id);
+    }
+
+    @RedisReactiveCacheGet(key = "#id")
+    @Override
+    public Mono<ApiRoute> findByIdAndEnableIsTrue(String id) {
+        return apiRouteRepository.findByIdAndEnableIsTrue(id);
     }
 
     @RedisReactiveCacheGet(key = "#apiRoute.concat(#apiKey)")
@@ -86,5 +102,16 @@ public class ApiRouteServiceImpl implements ApiRouteService {
     @Override
     public Flux<ApiRoute> findByNotApplicationCredential(String id) {
         return apiRouteRepository.findByNotApplicationCredential(id);
+    }
+
+    @RedisReactiveCacheEvictAll
+    @Override
+    public Mono<ApiRoute> statusApiRoute(String id) {
+        return apiRouteRepository.findById(id)
+                .flatMap(apiRoute -> {
+                    apiRoute.setEnable(!apiRoute.getEnable());
+                    return apiRouteRepository.save(apiRoute);
+                })
+                .doOnSuccess(x -> gatewayRouteService.refreshRoutes());
     }
 }

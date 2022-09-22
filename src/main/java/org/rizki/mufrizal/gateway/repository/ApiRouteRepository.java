@@ -25,4 +25,10 @@ public interface ApiRouteRepository extends ReactiveCrudRepository<ApiRoute, Str
             "FROM tb_api_route ap " +
             "WHERE ap.authentication NOT in ('passthrough') AND ap.id NOT IN (SELECT apc.api_route_id FROM tb_application_credential ac INNER JOIN tb_api_route_application_credential apc ON ac.id = apc.application_credential_id WHERE ac.id = :id)")
     Flux<ApiRoute> findByNotApplicationCredential(String id);
+
+    Flux<ApiRoute> findAllByEnableIsTrue();
+
+    Mono<Long> countAllByEnableIsTrue();
+
+    Mono<ApiRoute> findByIdAndEnableIsTrue(String id);
 }

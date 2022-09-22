@@ -42,6 +42,7 @@
                 <div class="card shadow mb-4">
                     <div class="card-body">
                         <form th:action="@{/administrator/apiroute/update/{id}(id=${id})}" th:object="${api_route}" method="post">
+                            <input type="hidden" th:field="*{enable}" />
                             <div class="form-group">
                                 <label>Name</label>
                                 <input type="text" class="form-control" placeholder="Enter Name" th:field="*{name}" />

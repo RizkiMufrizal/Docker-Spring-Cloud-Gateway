@@ -20,7 +20,7 @@ public class ApiPathRouteLocatorImpl implements RouteLocator {
     @Override
     public Flux<Route> getRoutes() {
         RouteLocatorBuilder.Builder routesBuilder = routeLocatorBuilder.routes();
-        return apiRouteService.findApiRoutes()
+        return apiRouteService.findAllByEnableIsTrue()
                 .map(apiRoute ->
                         routesBuilder.route(String.valueOf(apiRoute.getId()), predicateSpec ->
                                 setPredicateSpec(apiRoute, predicateSpec)))

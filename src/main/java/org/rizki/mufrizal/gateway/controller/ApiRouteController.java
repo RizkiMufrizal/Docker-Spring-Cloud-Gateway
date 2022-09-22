@@ -25,9 +25,13 @@ public class ApiRouteController {
 
     @GetMapping(value = "/dashboard")
     public Mono<Rendering> index() {
+        Mono<Long> countEnable = apiRouteService.countAllByEnableIsTrue();
+        Mono<Long> countAll = apiRouteService.count();
         return Mono.just(Rendering.view("index")
                 .modelAttribute("total_application_credential", applicationCredentialService.count())
-                .modelAttribute("total_api_route", apiRouteService.count()).build());
+                .modelAttribute("total_api_route_active", countEnable)
+                .modelAttribute("total_api_route_inactive", Mono.zip(countAll, countEnable).map(x -> x.getT1() - x.getT2()))
+                .modelAttribute("total_api_route", countAll).build());
     }
 
     @GetMapping(value = "/apiroute")
@@ -72,6 +76,12 @@ public class ApiRouteController {
         return Mono.just(Rendering.view("apirouteapplicationcredentials")
                 .modelAttribute("api_route", apiRouteService.findById(id))
                 .modelAttribute("application_credentials", applicationCredentialService.findAllByApiRoute(id)).build());
+    }
+
+    @GetMapping(value = "/apiroute/status/{id}")
+    public Mono<String> apirouteStatus(@PathVariable("id") String id) {
+        return apiRouteService.statusApiRoute(id)
+                .thenReturn("redirect:/administrator/apiroute");
     }
 
 }

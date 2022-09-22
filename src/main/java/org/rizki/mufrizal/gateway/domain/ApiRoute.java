@@ -55,6 +55,9 @@ public class ApiRoute implements Serializable, Persistable {
     @Column("connect_timeout")
     private String connectTimeout;
 
+    @Column("enable")
+    private Boolean enable;
+
     @Transient
     private List<ApiRouteApplicationCredential> apiRouteApplicationCredentials;
 

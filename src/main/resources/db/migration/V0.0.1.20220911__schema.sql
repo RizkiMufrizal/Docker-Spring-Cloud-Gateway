@@ -17,7 +17,8 @@ CREATE TABLE tb_api_route
     uri              varchar(255),
     authentication   varchar(50),
     response_timeout VARCHAR(10),
-    connect_timeout   VARCHAR(10)
+    connect_timeout  VARCHAR(10),
+    enable           bit
 );
 
 CREATE TABLE tb_api_route_application_credential

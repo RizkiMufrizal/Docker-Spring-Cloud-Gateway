@@ -41,8 +41,9 @@ public class AuthenticationApiKeyPreFilter implements GlobalFilter, Ordered {
         Route route = exchange.getAttribute(ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR);
         if (route != null && route.getId() != null) {
             log.info("route id : {}", route.getId());
-            return apiRouteService.findById(route.getId())
+            return apiRouteService.findByIdAndEnableIsTrue(route.getId())
                     .map(apiRoute -> this.proceedValidateApiKey(exchange, chain, apiRoute))
+                    .defaultIfEmpty(this.onError(exchange, "403", "Access Denied"))
                     .flatMap(x -> x);
         } else {
             return this.onError(exchange, "403", "Route Not Found");

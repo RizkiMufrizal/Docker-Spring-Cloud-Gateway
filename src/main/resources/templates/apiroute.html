@@ -60,6 +60,7 @@
                                     <th>Authentication</th>
                                     <th>Response Timeout</th>
                                     <th>Connect Timeout</th>
+                                    <th>Status</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -82,6 +83,11 @@
                                         <td th:text="${api_route.authentication}"></td>
                                         <td th:text="${api_route.responseTimeout}"></td>
                                         <td th:text="${api_route.connectTimeout}"></td>
+                                        <td>
+                                            <a th:href="@{/administrator/apiroute/status/{id}(id=${api_route.id})}" class="d-none d-sm-inline-block btn btn-sm btn-light shadow-sm">
+                                                <i class="fas fa-toggle-off fa-sm text-primary" th:classappend="${api_route.enable ? 'fa-toggle-on' : 'fa-toggle-off'}"></i>
+                                            </a>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
