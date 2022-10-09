@@ -29,4 +29,4 @@ This project was created to learn reactive programming, functional programming a
 - [x] View application credentials By API
 - [ ] User Management
 - [x] Cache To Redis
-- [ ] Send Log to ELK
+- [x] Send Log to ELK
