@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d %highlight(%-5level) %logger{35} - %highlight(%msg %n)</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <prudent>true</prudent>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- ganti file setiap jam -->
+            <fileNamePattern>
+                ${catalina.home:-.}/logs/server-%d{yyyy-MM-dd}.log
+            </fileNamePattern>
+
+            <!-- simpan file selama sebulan (24 * 31) -->
+            <maxHistory>384</maxHistory>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>
+
+    <appender name="ASYNC_STDOUT" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="STDOUT"/>
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>256</queueSize>
+        <includeCallerData>false</includeCallerData>
+        <neverBlock>true</neverBlock>
+    </appender>
+
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE"/>
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>256</queueSize>
+        <includeCallerData>false</includeCallerData>
+        <neverBlock>false</neverBlock>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="ASYNC_STDOUT"/>
+        <appender-ref ref="ASYNC_FILE"/>
+    </root>
+
+</configuration>
